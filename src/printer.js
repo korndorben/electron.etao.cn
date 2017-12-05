@@ -2,6 +2,7 @@ const net = require('net');
 const os = require('os');
 const moment = require('moment');
 const portscanner = require('portscanner')
+//打印
 function print({
 	ip,
 	port = 9100,
