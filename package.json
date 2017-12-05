@@ -20,13 +20,6 @@
                 "win32": [
                     "squirrel"
                 ],
-                "darwin": [
-                    "zip"
-                ],
-                "linux": [
-                    "deb",
-                    "rpm"
-                ]
             },
             "electronPackagerConfig": {
                 "packageManager": "yarn"
