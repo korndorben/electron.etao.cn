@@ -37,8 +37,8 @@
             "electronInstallerDebian": {},
             "electronInstallerRedhat": {},
             "github_repository": {
-                "owner": "",
-                "name": ""
+                "owner": "korndorben",
+                "name": "electron.etao.cn"
             },
             "windowsStoreConfig": {
                 "packageName": "",
