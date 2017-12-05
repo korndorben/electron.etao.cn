@@ -1,8 +1,8 @@
 {
 	"name": "electron.etao.cn",
-	"productName": "易淘商户客户端",
+	"productName": "electron.etao.cn",
 	"version": "1.0.0",
-	"description": "易淘商户客户端",
+	"description": "electron.etao.cn",
 	"main": "src/index.js",
 	"scripts": {
 		"start": "electron-forge start",
@@ -19,7 +19,7 @@
 			"make_targets": {
 				"win32": [
 					"squirrel"
-				],
+				]
 			},
 			"electronPackagerConfig": {
 				"packageManager": "yarn"
