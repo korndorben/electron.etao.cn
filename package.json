@@ -1,58 +1,58 @@
 {
-    "name": "electron.etao.cn",
-    "productName": "electron.etao.cn",
-    "version": "1.0.0",
-    "description": "My Electron application description",
-    "main": "src/index.js",
-    "scripts": {
-        "start": "electron-forge start",
-        "package": "electron-forge package",
-        "make": "electron-forge make",
-        "publish": "electron-forge publish",
-        "lint": "echo \"No linting configured\""
-    },
-    "keywords": [],
-    "author": "korndorben",
-    "license": "MIT",
-    "config": {
-        "forge": {
-            "make_targets": {
-                "win32": [
-                    "squirrel"
-                ],
-            },
-            "electronPackagerConfig": {
-                "packageManager": "yarn"
-            },
-            "electronWinstallerConfig": {
-                "name": "electron.etao.cn"
-            },
-            "electronInstallerDebian": {},
-            "electronInstallerRedhat": {},
-            "github_repository": {
-                "owner": "korndorben",
-                "name": "electron.etao.cn"
-            },
-            "windowsStoreConfig": {
-                "packageName": "",
-                "name": "electron.etao.cn"
-            }
-        }
-    },
-    "dependencies": {
-        "axios": "^0.17.1",
-        "electron-compile": "^6.4.2",
-        "electron-devtools-installer": "^2.1.0",
-        "electron-squirrel-startup": "^1.0.0",
-        "moment": "^2.19.3",
-        "portscanner": "^2.1.1",
-        "vue": "^2.1.7"
-    },
-    "devDependencies": {
-        "babel-plugin-transform-async-to-generator": "^6.24.1",
-        "babel-preset-env": "^1.6.1",
-        "babel-preset-react": "^6.24.1",
-        "electron-forge": "^4.1.5",
-        "electron-prebuilt-compile": "1.7.9"
-    }
+	"name": "electron.etao.cn",
+	"productName": "易淘商户客户端",
+	"version": "1.0.0",
+	"description": "易淘商户客户端",
+	"main": "src/index.js",
+	"scripts": {
+		"start": "electron-forge start",
+		"package": "electron-forge package",
+		"make": "electron-forge make",
+		"publish": "electron-forge publish",
+		"lint": "echo \"No linting configured\""
+	},
+	"keywords": [],
+	"author": "korndorben",
+	"license": "MIT",
+	"config": {
+		"forge": {
+			"make_targets": {
+				"win32": [
+					"squirrel"
+				],
+			},
+			"electronPackagerConfig": {
+				"packageManager": "yarn"
+			},
+			"electronWinstallerConfig": {
+				"name": "electron.etao.cn"
+			},
+			"electronInstallerDebian": {},
+			"electronInstallerRedhat": {},
+			"github_repository": {
+				"owner": "korndorben",
+				"name": "electron.etao.cn"
+			},
+			"windowsStoreConfig": {
+				"packageName": "",
+				"name": "electron.etao.cn"
+			}
+		}
+	},
+	"dependencies": {
+		"axios": "^0.17.1",
+		"electron-compile": "^6.4.2",
+		"electron-devtools-installer": "^2.1.0",
+		"electron-squirrel-startup": "^1.0.0",
+		"moment": "^2.19.3",
+		"portscanner": "^2.1.1",
+		"vue": "^2.1.7"
+	},
+	"devDependencies": {
+		"babel-plugin-transform-async-to-generator": "^6.24.1",
+		"babel-preset-env": "^1.6.1",
+		"babel-preset-react": "^6.24.1",
+		"electron-forge": "^4.1.5",
+		"electron-prebuilt-compile": "1.7.9"
+	}
 }
