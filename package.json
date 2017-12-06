@@ -25,7 +25,10 @@
 				"packageManager": "yarn"
 			},
 			"electronWinstallerConfig": {
-				"name": "electron.etao.cn"
+				"name": "electron.etao.cn",
+				"authors": "etao company",
+				"description": "易淘商户客户端",
+				"noMsi": false
 			},
 			"electronInstallerDebian": {},
 			"electronInstallerRedhat": {},
