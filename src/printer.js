@@ -14,7 +14,6 @@ function batchprint(datas) {
 	console.log(printers);
 	for (let key of Object.keys(printers)) {
 		let printer = printers[key][0]
-		console.log(printer);
 		let client = net.createConnection(printer.port / 1, printer.ip, function() {})
 		client.on('connect', function() {
 			console.log('connected');
