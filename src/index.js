@@ -2,7 +2,7 @@ import { app, BrowserWindow,ipcMain } from 'electron';
 import axios from 'axios'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
-import {ipaddress, scan, print,} from './printer'
+import {ipaddress, scan, print,batchprint} from './printer'
 
 ipcMain.on('mealorderupdated', async (event, args) => {
 	let printerdata = await axios.post('http://nm.etao.cn/api/graphql', {
@@ -16,10 +16,11 @@ ipcMain.on('mealorderupdated', async (event, args) => {
 	if (printerdata.data.data.forprinter.length <= 0) {
 		return false
 	}
-	for (let tobeprint of printerdata.data.data.forprinter) {
-		let {ip, port, data, repetition} = tobeprint
-		print({ip, port, data, repetition})
-	}
+	batchprint(printerdata.data.data.forprinter)
+	// for (let tobeprint of printerdata.data.data.forprinter) {
+	// 	let {ip, port, data, repetition} = tobeprint
+	// 	print({ip, port, data, repetition})
+	// }
 	// console.log(mealorder);
 })
 ipcMain.on('printer.print', (event, args) => {

@@ -2,14 +2,39 @@ const net = require('net');
 const os = require('os');
 const moment = require('moment');
 const portscanner = require('portscanner')
+function batchprint(datas) {
+	let printers = {}
+	for (let data of datas) {
+		if (printers[data.ip]) {
+			printers[data.ip].push(data)
+		} else {
+			printers[data.ip] = [data]
+		}
+	}
+	console.log(printers);
+	for (let key of Object.keys(printers)) {
+		let printer = printers[key][0]
+		console.log(printer);
+		let client = net.createConnection(printer.port / 1, printer.ip, function() {})
+		client.on('connect', function() {
+			console.log('connected');
+			for (let data of printers[key]) {
+				for (let i = 0; i < data.repetition; i++) {
+					client.write(Buffer.from(data.data, 'base64'))
+				}
+			}
+			client.end();
+		})
+	}
+}
 //打印
 function print({
 	ip,
 	port = 9100,
 	data = {},
-	repetition = 1,
+	repetition = 1
 }) {
-	const client = net.createConnection(port / 1, ip, function() {})
+	let client = net.createConnection(port / 1, ip, function() {})
 	client.on('connect', function() {
 		console.log('connected');
 		for (let i = 0; i < repetition; i++) {
@@ -33,7 +58,7 @@ function scan(cb) {
 			let printer_ipaddress = arr.join('.')
 			portscanner.checkPortStatus(9100, printer_ipaddress, function(error, status) {
 				if ('open' == status) {
-					cb && cb({ip: printer_ipaddress, port: 9100, status: status})
+					cb && cb({ip: printer_ipaddress, port: 9100, status: status,})
 				}
 			})
 		}
@@ -55,5 +80,6 @@ function ipaddress() {
 module.exports = {
 	ipaddress,
 	scan,
-	print
+	print,
+	batchprint
 };
