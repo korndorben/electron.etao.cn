@@ -2,52 +2,59 @@ const net = require('net');
 const os = require('os');
 const moment = require('moment');
 const portscanner = require('portscanner')
+let printers = {}
 function batchprint(datas) {
-	let printers = {}
+	//检查打印机
 	for (let data of datas) {
-		if (printers[data.ip]) {
-			printers[data.ip].push(data)
-		} else {
-			printers[data.ip] = [data]
+		let printerkey = `${data.ip}:${data.port}`
+		if (!printers[printerkey]) {
+			let sprinter = Object.create(null)
+			sprinter.ip = data.ip
+			sprinter.port = data.port
+			sprinter.client = net.createConnection(data.port / 1, data.ip)
+			sprinter.client.setKeepAlive(true, 1000 * 1)
+			sprinter.client.on('timeout', function() {
+				console.log('timeout');
+			})
+			sprinter.client.on('error', function(error) {
+				console.log(error);
+			})
+			printers[printerkey] = sprinter
+		}
+		if (printers[printerkey]['client'].destroyed) {
+			printers[printerkey]['client'] = net.createConnection(data.port / 1, data.ip)
+			printers[printerkey]['client'].setKeepAlive(true, 1000 * 1)
 		}
 	}
-	console.log(printers);
-	for (let key of Object.keys(printers)) {
-		let printer = printers[key][0]
-		let client = net.createConnection(printer.port / 1, printer.ip, function() {})
-		client.on('connect', function() {
-			console.log('connected');
-			for (let data of printers[key]) {
-				for (let i = 0; i < data.repetition; i++) {
-					client.write(Buffer.from(data.data, 'base64'))
-				}
-			}
-			client.end();
-		})
+	for (let data of datas) {
+		let printer = printers[`${data.ip}:${data.port}`].client
+		for (let i = 0; i < data.repetition; i++) {
+			printer.write(Buffer.from(data.data, 'base64'))
+		}
 	}
 }
 //打印
-function print({
-	ip,
-	port = 9100,
-	data = {},
-	repetition = 1
-}) {
-	let client = net.createConnection(port / 1, ip, function() {})
-	client.on('connect', function() {
-		console.log('connected');
-		for (let i = 0; i < repetition; i++) {
-			client.write(Buffer.from(data, 'base64'))
-		}
-		client.end();
-	})
-	client.on('error', function(err) {
-		console.log(err);
-	})
-	client.on('data', function() {})
-	client.on('end', function() {})
-	client.on('close', function() {})
-}
+// function print({
+// 	ip,
+// 	port = 9100,
+// 	data = {},
+// 	repetition = 1,
+// }) {
+// 	let client = net.createConnection(port / 1, ip, function() {})
+// 	client.on('connect', function() {
+// 		console.log('connected');
+// 		for (let i = 0; i < repetition; i++) {
+// 			client.write(Buffer.from(data, 'base64'))
+// 		}
+// 		client.end();
+// 	})
+// 	client.on('error', function(err) {
+// 		console.log(err);
+// 	})
+// 	client.on('data', function() {})
+// 	client.on('end', function() {})
+// 	client.on('close', function() {})
+// }
 function scan(cb) {
 	let localnetworks = ipaddress()
 	for (let localnetwork of localnetworks) {
@@ -57,7 +64,7 @@ function scan(cb) {
 			let printer_ipaddress = arr.join('.')
 			portscanner.checkPortStatus(9100, printer_ipaddress, function(error, status) {
 				if ('open' == status) {
-					cb && cb({ip: printer_ipaddress, port: 9100, status: status,})
+					cb && cb({ip: printer_ipaddress, port: 9100, status: status})
 				}
 			})
 		}
@@ -79,6 +86,5 @@ function ipaddress() {
 module.exports = {
 	ipaddress,
 	scan,
-	print,
-	batchprint
+	batchprint,
 };
