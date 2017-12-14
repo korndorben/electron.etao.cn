@@ -3,16 +3,6 @@ import axios from 'axios'
 import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer';
 import {enableLiveReload} from 'electron-compile';
 import {ipaddress, scan, batchprint} from './printer'
-/* http://nm.etao.cn/pos/per.cooking.245.529.html
-http://nm.etao.cn/pos/per.cooking.245.528.html
-http://nm.etao.cn/pos/all.143.transfering.245.html
-http://nm.etao.cn/pos//all.144.returned.245.html
-
-http://nm.etao.cn/pos/all.145.transposition.246.html
-http://nm.etao.cn/pos/all.143.transfering.246.html
-http://nm.etao.cn/pos/per.cooking.246.537.html
-http://nm.etao.cn/pos/per.cooking.246.538.html 
-*/
 
 ipcMain.on('login', async (event, args) => {
 	axios.defaults.baseURL = args.baseURL;

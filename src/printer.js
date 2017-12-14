@@ -33,28 +33,7 @@ function batchprint(datas) {
 		}
 	}
 }
-//打印
-// function print({
-// 	ip,
-// 	port = 9100,
-// 	data = {},
-// 	repetition = 1,
-// }) {
-// 	let client = net.createConnection(port / 1, ip, function() {})
-// 	client.on('connect', function() {
-// 		console.log('connected');
-// 		for (let i = 0; i < repetition; i++) {
-// 			client.write(Buffer.from(data, 'base64'))
-// 		}
-// 		client.end();
-// 	})
-// 	client.on('error', function(err) {
-// 		console.log(err);
-// 	})
-// 	client.on('data', function() {})
-// 	client.on('end', function() {})
-// 	client.on('close', function() {})
-// }
+
 function scan(cb) {
 	let localnetworks = ipaddress()
 	for (let localnetwork of localnetworks) {
