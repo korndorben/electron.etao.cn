@@ -1,7 +1,7 @@
 {
 	"name": "electron.etao.cn",
 	"productName": "electron.etao.cn",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "electron.etao.cn",
 	"main": "src/index.js",
 	"scripts": {
