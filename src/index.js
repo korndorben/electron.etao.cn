@@ -3,20 +3,9 @@ import axios from 'axios'
 import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer';
 import {enableLiveReload} from 'electron-compile';
 import {ipaddress, scan, batchprint} from './printer'
-
-ipcMain.on('login', async (event, args) => {
-	axios.defaults.baseURL = args.baseURL;
-	axios.defaults.headers.common['Authorization'] = args.token
-})
 ipcMain.on('edupdatemealorder', async (event, args) => {
-	let printerdata = await axios.post('/api/graphql', {
-		query: `query($supplierid:Int!,$orderid:Int!){ forprinter(supplierid:$supplierid,orderid:$orderid) { ip port data repetition } }`,
-		operationName: '',
-		variables: {
-			supplierid: args.supplierid,
-			orderid: args.id,
-		},
-	})
+	axios.defaults.headers.common['Authorization'] = args.token;
+	let printerdata = await axios.post(args.URL, args.data, args.config)
 	if (printerdata.data.data.forprinter.length <= 0) {
 		return false
 	}
