@@ -1,7 +1,7 @@
 {
 	"name": "electron.etao.cn",
 	"productName": "electron.etao.cn",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"description": "electron.etao.cn",
 	"main": "src/index.js",
 	"scripts": {
@@ -47,15 +47,15 @@
 		"electron-compile": "^6.4.2",
 		"electron-devtools-installer": "^2.1.0",
 		"electron-squirrel-startup": "^1.0.0",
-		"moment": "^2.19.3",
+		"moment": "^2.19.4",
 		"portscanner": "^2.1.1",
-		"vue": "^2.1.7"
+		"vue": "^2.5.11"
 	},
 	"devDependencies": {
 		"babel-plugin-transform-async-to-generator": "^6.24.1",
 		"babel-preset-env": "^1.6.1",
 		"babel-preset-react": "^6.24.1",
-		"electron-forge": "^4.1.5",
+		"electron-forge": "^4.1.6",
 		"electron-prebuilt-compile": "1.7.9"
 	}
 }

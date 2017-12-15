@@ -4,7 +4,6 @@ import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer';
 import {enableLiveReload} from 'electron-compile';
 import {ipaddress, scan, batchprint} from './printer'
 ipcMain.on('edupdatemealorder', async (event, args) => {
-	axios.defaults.headers.common['Authorization'] = args.token;
 	let printerdata = await axios.post(args.URL, args.data, args.config)
 	if (printerdata.data.data.forprinter.length <= 0) {
 		return false
