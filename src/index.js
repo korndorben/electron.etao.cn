@@ -1,14 +1,26 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
+import {app, BrowserWindow, ipcMain,} from 'electron';
 import axios from 'axios'
 import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer';
 import {enableLiveReload} from 'electron-compile';
-import {ipaddress, scan, batchprint} from './printer'
+import {ipaddress, scan, batchprint,} from './printer'
 ipcMain.on('edupdatemealorder', async (event, args) => {
-	let printerdata = await axios.post(args.URL, args.data, args.config)
-	if (printerdata.data.data.forprinter.length <= 0) {
+	let printerdata = await axios.post(args.URL, args.data, args.config) //1.取打印数据
+	if (printerdata.data.data.mealorder.length <= 0) {
 		return false
 	}
-	batchprint(printerdata.data.data.forprinter)
+	let [mealorder] = printerdata.data.data.mealorder
+	if (mealorder.printdatas.length <= 0) {
+		return false
+	}
+	batchprint(mealorder.printdatas, async function(data) {
+		args.cbdata.variables.p = {
+			id: data.id,
+			printedtimes: data.printedtimes*1 + 1,
+		}
+		console.log('args.cbdata');
+		console.log(args.cbdata);
+		await axios.post(args.URL, args.cbdata, args.config) //2.打印完成回调
+	})
 })
 ipcMain.on('printer.init', (event, args) => {
 	scan(function(result) {
@@ -27,7 +39,7 @@ const createWindow = async () => {
 		width: 1080,
 		minWidth: 680,
 		height: 840,
-		title: app.getName(),
+		title: app.getName()
 	}
 	mainWindow = new BrowserWindow(windowOptions);
 	// and load the index.html of the app.

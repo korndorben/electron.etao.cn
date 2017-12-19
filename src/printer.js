@@ -3,7 +3,7 @@ const os = require('os');
 const moment = require('moment');
 const portscanner = require('portscanner')
 let printers = {}
-function batchprint(datas) {
+function batchprint(datas, cb) {
 	//检查打印机
 	for (let data of datas) {
 		let printerkey = `${data.ip}:${data.port}`
@@ -29,11 +29,12 @@ function batchprint(datas) {
 	for (let data of datas) {
 		let printer = printers[`${data.ip}:${data.port}`].client
 		for (let i = 0; i < data.repetition; i++) {
-			printer.write(Buffer.from(data.data, 'base64'))
+			printer.write(Buffer.from(data.data, 'base64'), 'utf8', function() {
+				cb && cb(data) //每打印一份都确认一次
+			})
 		}
 	}
 }
-
 function scan(cb) {
 	let localnetworks = ipaddress()
 	for (let localnetwork of localnetworks) {
