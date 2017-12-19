@@ -49,6 +49,7 @@
 		"electron-squirrel-startup": "^1.0.0",
 		"moment": "^2.19.4",
 		"portscanner": "^2.1.1",
+		"request": "^2.83.0",
 		"vue": "^2.5.11"
 	},
 	"devDependencies": {
