@@ -15,26 +15,25 @@ ipcMain.on('edupdatemealorder', async (event, args) => {
             return false
         }
         for (let mealorder of body.data.mealorder) { //2.遍历所有未打印的订单
-            if (mealorder.printdatas.length <= 0) {
-                return false
-            }
-            batchprint(mealorder.printdatas, function(data) { //3.每单打印
-                request({
-                    url: args.config.url,
-                    method: 'POST',
-                    headers: args.config.headers,
-                    json: Object.assign(args.cbdata, {
-                        variables: {
-                            p: {
-                                id: data.id,
-                                printedtimes: data.printedtimes * 1 + 1
+            if (mealorder.printdatas.length > 0) {
+                batchprint(mealorder.printdatas, function(data) { //3.每单打印
+                    request({
+                        url: args.config.url,
+                        method: 'POST',
+                        headers: args.config.headers,
+                        json: Object.assign(args.cbdata, {
+                            variables: {
+                                p: {
+                                    id: data.id,
+                                    printedtimes: data.printedtimes * 1 + 1
+                                }
                             }
-                        }
+                        })
+                    }, function(error1, response1, body1) {
+                        console.log(body1);
                     })
-                }, function(error1, response1, body1) {
-                    console.log(body1);
                 })
-            })
+            }
         }
     })
 })
