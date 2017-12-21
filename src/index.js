@@ -11,30 +11,26 @@ ipcMain.on('edupdatemealorder', async (event, args) => {
         headers: args.config.headers,
         json: args.data
     }, function(error, response, body) {
-        if (body.data.mealorder.length <= 0) {
+        if (body.data.printdata.length <= 0) {
             return false
         }
-        for (let mealorder of body.data.mealorder) { //2.遍历所有未打印的订单
-            if (mealorder.printdatas.length > 0) {
-                batchprint(mealorder.printdatas, function(data) { //3.每单打印
-                    request({
-                        url: args.config.url,
-                        method: 'POST',
-                        headers: args.config.headers,
-                        json: Object.assign(args.cbdata, {
-                            variables: {
-                                p: {
-                                    id: data.id,
-                                    printedtimes: data.printedtimes * 1 + 1
-                                }
-                            }
-                        })
-                    }, function(error1, response1, body1) {
-                        console.log(body1);
-                    })
+        batchprint(body.data.printdata, function(data) {
+            request({
+                url: args.config.url,
+                method: 'POST',
+                headers: args.config.headers,
+                json: Object.assign(args.cbdata, {
+                    variables: {
+                        p: {
+                            id: data.id,
+                            printedtimes: data.printedtimes * 1 + 1
+                        }
+                    }
                 })
-            }
-        }
+            }, function(error1, response1, body1) {
+                console.log(body1);
+            })
+        })
     })
 })
 ipcMain.on('printer.init', (event, args) => {
@@ -51,9 +47,9 @@ if (isDevMode)
 const createWindow = async () => {
     // Create the browser window.
     var windowOptions = {
-        width: 1080,
-        minWidth: 680,
-        height: 840,
+        width: 1366,
+        minWidth: 1024,
+        height: 768,
         title: app.getName()
     }
     mainWindow = new BrowserWindow(windowOptions);
