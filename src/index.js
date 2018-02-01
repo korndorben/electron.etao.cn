@@ -1,8 +1,15 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
+import {
+    app,
+    BrowserWindow,
+    ipcMain,
+    globalShortcut
+} from 'electron';
 import request from 'request'
-import installExtension, {VUEJS_DEVTOOLS} from 'electron-devtools-installer';
-import {enableLiveReload} from 'electron-compile';
-import {ipaddress, scan, batchprint} from './printer'
+import {
+    ipaddress,
+    scan,
+    batchprint
+} from './printer'
 ipcMain.on('edupdatemealorder', async (event, args) => {
     console.log(args);
     request({ //1.请求需要打印的数据
@@ -41,9 +48,6 @@ ipcMain.on('printer.init', (event, args) => {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-const isDevMode = process.execPath.match(/[\\/]electron/);
-if (isDevMode)
-    enableLiveReload();
 const createWindow = async () => {
     // Create the browser window.
     var windowOptions = {
@@ -55,11 +59,7 @@ const createWindow = async () => {
     mainWindow = new BrowserWindow(windowOptions);
     // and load the index.html of the app.
     mainWindow.loadURL(`http://nbw.b.etao.cn`);
-    // Open the DevTools.
-    if (isDevMode) {
-        await installExtension(VUEJS_DEVTOOLS);
-        mainWindow.webContents.openDevTools();
-    }
+
     // Emitted when the window is closed.
     mainWindow.on('closed', () => {
         // Dereference the window object, usually you would store windows
@@ -71,21 +71,43 @@ const createWindow = async () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+// app.on('ready', createWindow);
+app.on('ready', async function() {
+    await createWindow()
+    //注册快捷键
+    let ret = globalShortcut.register('CommandOrControl+K', async () => {
+        console.log('CommandOrControl+K');
+        mainWindow.toggleDevTools()
+    })
+
+    globalShortcut.register('CommandOrControl+Left', () => {
+        console.log('CommandOrControl+Left');
+        mainWindow.webContents.canGoBack() && mainWindow.webContents.goBack()
+    })
+    globalShortcut.register('CommandOrControl+Right', () => {
+        console.log('CommandOrControl+Right');
+        mainWindow.webContents.canGoForward() && mainWindow.webContents.canGoForward()
+    })
+});
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
         createWindow();
     }
 });
+app.on('will-quit', () => {
+    // Unregister a shortcut.
+    globalShortcut.unregister('CommandOrControl+K')
+    globalShortcut.unregister('CommandOrControl+Left')
+    globalShortcut.unregister('CommandOrControl+Right')
+
+    // Unregister all shortcuts.
+    globalShortcut.unregisterAll()
+})
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
