@@ -10,6 +10,39 @@ import {
     scan,
     batchprint
 } from './printer'
+let printdataqueue = {}
+ipcMain.on('printdata', async (event, args) => { //直接推送的可打印的数据
+    console.log('args');
+    console.log(args);
+    if (!args.printdata || args.printdata.length <= 0) {
+        return
+    }
+    for (let p of args.printdata) {
+        if (!printdataqueue[p.orderid]) {
+            printdataqueue[p.orderid] = p
+        }
+    }
+    batchprint(args.printdata.filter(x => x.printedtimes <= 0), function(data) {
+        console.log('data');
+        console.log(data);
+        printdataqueue[data.orderid].printedtimes * 1 + 1
+        request({
+            url: args.config.url,
+            method: 'POST',
+            headers: args.config.headers,
+            json: Object.assign(args.cbdata, {
+                variables: {
+                    p: {
+                        id: data.id,
+                        printedtimes: data.printedtimes * 1 + 1
+                    }
+                }
+            })
+        }, function(error1, response1, body1) {
+            console.log(body1);
+        })
+    })
+})
 ipcMain.on('edupdatemealorder', async (event, args) => {
     console.log(args);
     request({ //1.请求需要打印的数据
@@ -21,7 +54,15 @@ ipcMain.on('edupdatemealorder', async (event, args) => {
         if (body.data.printdata.length <= 0) {
             return false
         }
-        batchprint(body.data.printdata, function(data) {
+        for (let p of body.data.printdata) {
+            if (!printdataqueue[p.orderid]) {
+                printdataqueue[p.orderid] = p
+            }
+        }
+        batchprint(body.data.printdata.filter(x => x.printedtimes <= 0), function(data) {
+            console.log('data');
+            console.log(data);
+            printdataqueue[data.orderid].printedtimes * 1 + 1
             request({
                 url: args.config.url,
                 method: 'POST',
