@@ -23,8 +23,6 @@ ipcMain.on('printdata', async (event, args) => { //直接推送的可打印的�
         }
     }
     batchprint(args.printdata.filter(x => x.printedtimes <= 0), function(data) {
-        console.log('data');
-        console.log(data);
         printdataqueue[data.orderid].printedtimes * 1 + 1
         request({
             url: args.config.url,
@@ -60,8 +58,6 @@ ipcMain.on('edupdatemealorder', async (event, args) => {
             }
         }
         batchprint(body.data.printdata.filter(x => x.printedtimes <= 0), function(data) {
-            console.log('data');
-            console.log(data);
             printdataqueue[data.orderid].printedtimes * 1 + 1
             request({
                 url: args.config.url,
