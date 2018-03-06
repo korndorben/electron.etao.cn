@@ -8,8 +8,19 @@ import request from 'request'
 import {
     ipaddress,
     scan,
-    batchprint
+    batchprint,
+    test
 } from './printer'
+ipcMain.on('printer.test', async (event, args) => { //直接推送的可打印的数据
+    console.log('args');
+    let {
+        ip,
+        port,
+        msg
+    } = args
+    console.log(args);
+    test(ip, port, msg)
+})
 let printdataqueue = {}
 ipcMain.on('printdata', async (event, args) => { //直接推送的可打印的数据
     console.log('args');
@@ -77,9 +88,10 @@ ipcMain.on('edupdatemealorder', async (event, args) => {
         })
     })
 })
-ipcMain.on('printer.init', (event, args) => {
+ipcMain.on('printer.scan', (event, args) => {
+    console.log('重新扫描网络....');
     scan(function(result) {
-        mainWindow.webContents.send('printer.init', result)
+        mainWindow.webContents.send('printer.scan', result)
     })
 })
 // Keep a global reference of the window object, if you don't, the window will
@@ -116,15 +128,15 @@ app.on('ready', async function() {
         console.log('CommandOrControl+K');
         mainWindow.toggleDevTools()
     })
-
-    globalShortcut.register('CommandOrControl+Left', () => {
-        console.log('CommandOrControl+Left');
-        mainWindow.webContents.canGoBack() && mainWindow.webContents.goBack()
-    })
-    globalShortcut.register('CommandOrControl+Right', () => {
-        console.log('CommandOrControl+Right');
-        mainWindow.webContents.canGoForward() && mainWindow.webContents.canGoForward()
-    })
+    //
+    // globalShortcut.register('CommandOrControl+Left', () => {
+    //     console.log('CommandOrControl+Left');
+    //     mainWindow.webContents.canGoBack() && mainWindow.webContents.goBack()
+    // })
+    // globalShortcut.register('CommandOrControl+Right', () => {
+    //     console.log('CommandOrControl+Right');
+    //     mainWindow.webContents.canGoForward() && mainWindow.webContents.canGoForward()
+    // })
 });
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -140,8 +152,8 @@ app.on('activate', () => {
 app.on('will-quit', () => {
     // Unregister a shortcut.
     globalShortcut.unregister('CommandOrControl+K')
-    globalShortcut.unregister('CommandOrControl+Left')
-    globalShortcut.unregister('CommandOrControl+Right')
+    // globalShortcut.unregister('CommandOrControl+Left')
+    // globalShortcut.unregister('CommandOrControl+Right')
 
     // Unregister all shortcuts.
     globalShortcut.unregisterAll()
