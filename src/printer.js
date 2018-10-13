@@ -54,28 +54,8 @@ function checkprinterstatus(ip, port) {
     return printers[printerkey]
 }
 
-async function test(ip, port, msg) {
-    let printer = checkprinterstatus(ip, port)
-    // console.log('printer.client.WritableState');
-    // for (let prop in printer.client) {
-    //     if (printer.client.hasOwnProperty(prop)) {
-    //         console.log(prop);
-    //         console.log(printer.client[prop]);
-    //     }
-    // }
-    // console.log(printer.client._writableState);
-    let buffer = []
-    buffer.push(Buffer.from([0x1b, 0x40, ])) //初始化
-    buffer.push(Buffer.from('----------\n'));
-    buffer.push(Buffer.from(`${msg}\n\n\n\n\n`));
-    buffer.push(Buffer.from('----------\n'));
-    buffer.push(Buffer.from([0x1d, 0x56, 0x00, ])); //切纸
-    printer.client.write(Buffer.concat(buffer), 'utf8', function() {
-        console.log('打印完毕');
-    })
-}
 async function batchprint(datas, cb) {
-    for (let data of datas) {
+    for (let data of datas || []) {
         let printer = checkprinterstatus(data.ip, data.port)
         for (let i = 0; i < data.repetition; i++) {
             printer.client.write(Buffer.from(data.data, 'base64'), 'utf8', function() {
@@ -85,66 +65,6 @@ async function batchprint(datas, cb) {
     }
 }
 
-var checkPort = function(port, host, callback) {
-    var socket = new Socket(),
-        status = null;
-    // Socket connection established, port is open
-    socket.on('connect', function() {
-        status = 'open';
-        socket.end();
-    });
-    socket.setTimeout(1500); // If no response, assume port is not listening
-    socket.on('timeout', function() {
-        status = 'closed';
-        socket.destroy();
-    });
-    socket.on('error', function(exception) {
-        status = 'closed';
-    });
-    socket.on('close', function(exception) {
-        callback(null, status, host, port);
-    });
-    socket.connect(port, host);
-}
-
-function ipaddress() {
-    var networkInterfaces = os.networkInterfaces();
-    let ipaddresses = []
-    for (let prop of Object.keys(networkInterfaces)) {
-        for (let ipaddress of networkInterfaces[prop]) {
-            if (ipaddress.internal || ipaddress.family.toUpperCase() == 'IPV6') {
-                continue
-            }
-            ipaddresses.push(ipaddress)
-        }
-    }
-    return ipaddresses
-};
-
-function scan(cb) {
-    console.log('重新扫描网络.....');
-    console.log(ipaddress());
-    for (let localnetwork of ipaddress()) {
-        for (let i = 1; i <= 255; i++) {
-            let arr = (localnetwork.address || '192.168.0.1').split('.');
-            arr[3] = i
-            let printer_ipaddress = arr.join('.')
-            checkPort(9100, printer_ipaddress, function(error, status, host, port) {
-                if ('open' == status) {
-                    cb && cb({
-                        ip: printer_ipaddress,
-                        port: 9100,
-                        status: status
-                    })
-                }
-            })
-        }
-    }
-}
-
 module.exports = {
-    ipaddress,
-    scan,
     batchprint,
-    test
 };

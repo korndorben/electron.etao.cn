@@ -5,93 +5,10 @@ import {
     globalShortcut
 } from 'electron';
 import request from 'request'
-import {
-    ipaddress,
-    scan,
-    batchprint,
-    test
-} from './printer'
-ipcMain.on('printer.test', async (event, args) => { //直接推送的可打印的数据
-    console.log('args');
-    let {
-        ip,
-        port,
-        msg
-    } = args
-    console.log(args);
-    test(ip, port, msg)
-})
-let printdataqueue = {}
+import { batchprint, } from './printer'
 ipcMain.on('printdata', async (event, args) => { //直接推送的可打印的数据
-    console.log('args');
-    console.log(args);
-    if (!args.printdata || args.printdata.length <= 0) {
-        return
-    }
-    for (let p of args.printdata) {
-        if (!printdataqueue[p.orderid]) {
-            printdataqueue[p.orderid] = p
-        }
-    }
-    batchprint(args.printdata.filter(x => x.printedtimes <= 0), function(data) {
-        printdataqueue[data.orderid].printedtimes * 1 + 1
-        request({
-            url: args.config.url,
-            method: 'POST',
-            headers: args.config.headers,
-            json: Object.assign(args.cbdata, {
-                variables: {
-                    p: {
-                        id: data.id,
-                        printedtimes: data.printedtimes * 1 + 1
-                    }
-                }
-            })
-        }, function(error1, response1, body1) {
-            console.log(body1);
-        })
-    })
-})
-ipcMain.on('edupdatemealorder', async (event, args) => {
-    console.log(args);
-    request({ //1.请求需要打印的数据
-        url: args.config.url,
-        method: 'POST',
-        headers: args.config.headers,
-        json: args.data
-    }, function(error, response, body) {
-        if (body.data.printdata.length <= 0) {
-            return false
-        }
-        for (let p of body.data.printdata) {
-            if (!printdataqueue[p.orderid]) {
-                printdataqueue[p.orderid] = p
-            }
-        }
-        batchprint(body.data.printdata.filter(x => x.printedtimes <= 0), function(data) {
-            printdataqueue[data.orderid].printedtimes * 1 + 1
-            request({
-                url: args.config.url,
-                method: 'POST',
-                headers: args.config.headers,
-                json: Object.assign(args.cbdata, {
-                    variables: {
-                        p: {
-                            id: data.id,
-                            printedtimes: data.printedtimes * 1 + 1
-                        }
-                    }
-                })
-            }, function(error1, response1, body1) {
-                console.log(body1);
-            })
-        })
-    })
-})
-ipcMain.on('printer.scan', (event, args) => {
-    console.log('重新扫描网络....');
-    scan(function(result) {
-        mainWindow.webContents.send('printer.scan', result)
+    batchprint(args.printdata, function(data) {
+        console.log('打印完毕')
     })
 })
 // Keep a global reference of the window object, if you don't, the window will
@@ -107,7 +24,7 @@ const createWindow = async () => {
     }
     mainWindow = new BrowserWindow(windowOptions);
     // and load the index.html of the app.
-    mainWindow.loadURL(`http://nbw.b.etao.cn`);
+    mainWindow.loadURL(`http://moon.asqy.net`);
 
     // Emitted when the window is closed.
     mainWindow.on('closed', () => {

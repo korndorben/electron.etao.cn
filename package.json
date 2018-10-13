@@ -44,17 +44,17 @@
 	},
 	"dependencies": {
 		"axios": "^0.17.1",
-		"electron-compile": "^6.4.2",
+		"electron-compile": "^6.4.3",
 		"electron-devtools-installer": "^2.2.3",
 		"electron-squirrel-startup": "^1.0.0",
 		"moment": "^2.20.1",
-		"portscanner": "^2.1.1",
-		"request": "^2.83.0",
+		"portscanner": "^2.2.0",
+		"request": "^2.88.0",
 		"vue": "^2.5.13"
 	},
 	"devDependencies": {
 		"babel-plugin-transform-async-to-generator": "^6.24.1",
-		"babel-preset-env": "^1.6.1",
+		"babel-preset-env": "^1.7.0",
 		"babel-preset-react": "^6.24.1",
 		"electron-forge": "^4.3.0",
 		"electron-prebuilt-compile": "1.7.9"
