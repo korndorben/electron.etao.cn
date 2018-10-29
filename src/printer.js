@@ -55,6 +55,8 @@ function checkprinterstatus(ip, port) {
 }
 
 async function batchprint(datas, cb) {
+    console.log('datas')
+    console.log(datas)
     for (let data of datas || []) {
         let printer = checkprinterstatus(data.ip, data.port)
         for (let i = 0; i < data.repetition; i++) {

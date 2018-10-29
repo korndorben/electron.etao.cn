@@ -7,6 +7,8 @@ import {
 import request from 'request'
 import { batchprint, } from './printer'
 ipcMain.on('printdata', async (event, args) => { //直接推送的可打印的数据
+    console.log('printdata.args')
+    console.log(args)
     batchprint(args.printdata, function(data) {
         console.log('打印完毕')
     })
